@@ -1,6 +1,13 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask, request, json
+from werkzeug.security import generate_password_hash,check_password_hash
+
+from functools import wraps
+import uuid
+import jwt
+import datetime
+
 from service.group_service import Group_Service
 from service.user_service import User_Service
 
@@ -8,11 +15,11 @@ load_dotenv()
 
 app = Flask(__name__)
 url = os.getenv("DATABASE_URL")
+api_key = os.getenv("API_KEY")
 
 group_service = Group_Service(url)
 user_service = User_Service(url)
 
-@app.get("/")
 def readyness():
     return "Send it"
 
