@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask, request, json
-from werkzeug.security import generate_password_hash,check_password_hash
+from flask_cors import CORS
 
 from functools import wraps
 import uuid
@@ -14,28 +14,30 @@ from service.user_service import User_Service
 load_dotenv()
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
 url = os.getenv("DATABASE_URL")
 api_key = os.getenv("API_KEY")
 
 group_service = Group_Service(url)
 user_service = User_Service(url)
 
+@app.get("/")
 def readyness():
     return "Send it"
 
 @app.post("/user/create")
 def create_user():
-    data = request.get_json()
-    group_id = data["group_id"]
-    first_name = data["first_name"]
-    last_name = data["last_name"]
-    email = data["email"]
-    password = data["password"]
-    return user_service.create(group_id, first_name, last_name, email, password)
+    user = request.get_json()
+    return user_service.create(user)
 
 @app.delete("/user/delete/<int:id>")
 def delete_user(id):
     return user_service.delete(id)
+
+@app.post("/user/authenticate")
+def authenticate_user():
+    user = request.get_json()
+    return user_service.authenticate(user)
 
 @app.post("/group/create")
 def create_group():
