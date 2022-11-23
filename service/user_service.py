@@ -79,11 +79,16 @@ class User_Service:
             with self.connection.cursor() as cursor:
                 cursor.execute(CREATE_USERS_TABLE)
                 cursor.execute(AUTHENTICATE_USER, (email,))
-                password_hash = cursor.fetchone()[0]
+                try: 
+                    password_hash = cursor.fetchone()[0]
+                except TypeError:
+                    return {"message": f"Email not found."}, 400
+                if not password_hash:
+                    print(password_hash)
                 if check_password_hash(password_hash, password):
                     return {"message": f"Login Success!"}, 201
                 else:
-                    return {"message": f"Email/Password not found."}, 404
+                    return {"message": f"Password incorrect."}, 404
 
     @staticmethod
     def check_password_strength(password):
