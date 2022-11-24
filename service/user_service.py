@@ -100,7 +100,7 @@ class User_Service:
           return {"message": f"Password incorrect."}, 404
   
   def get_all_users(self):
-    GET_ALL_USERS = "SELECT * FROM groups;"
+    GET_ALL_USERS = "SELECT * FROM users;"
 
     with self.connection:
       with self.connection.cursor(cursor_factory=RealDictCursor) as cursor:
