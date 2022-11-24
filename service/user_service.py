@@ -1,5 +1,6 @@
 import re
 import psycopg2
+from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask import jsonify
 
@@ -97,6 +98,16 @@ class User_Service:
           return {"token": token, "message": f"Login Success!"}, 201
         else:
           return {"message": f"Password incorrect."}, 404
+  
+  def get_all_users(self):
+    GET_ALL_USERS = "SELECT * FROM groups;"
+
+    with self.connection:
+      with self.connection.cursor(cursor_factory=RealDictCursor) as cursor:
+        cursor.execute(CREATE_USERS_TABLE)
+        cursor.execute(GET_ALL_USERS)
+        users = cursor.fetchall()
+        return jsonify(users), 201
 
   def decode_token(self, token):
     return jwt.decode(token, self.api_key, algorithms=["HS256"])

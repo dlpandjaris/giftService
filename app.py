@@ -60,6 +60,10 @@ def authenticate_user():
 def get_user_by_id(id):
   return user_service.get_user_by_id(id)
 
+@app.get('/user')
+def get_all_users():
+  return user_service.get_all_users()
+
 
 
 @app.post("/group/create")

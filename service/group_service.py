@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2.extras import RealDictCursor
 from flask import jsonify
 
 CREATE_GROUPS_TABLE = ("""
@@ -38,11 +39,11 @@ class Group_Service:
     GET_ALL_GROUPS = "SELECT * FROM groups;"
 
     with self.connection:
-      with self.connection.cursor() as cursor:
+      with self.connection.cursor(cursor_factory=RealDictCursor) as cursor:
         cursor.execute(CREATE_GROUPS_TABLE)
         cursor.execute(GET_ALL_GROUPS)
         groups = cursor.fetchall()
-    return jsonify(groups), 201
+        return jsonify(groups), 201
 
   def get_group_counts(self):
     # SELECT_GROUP_COUNTS = ("""
