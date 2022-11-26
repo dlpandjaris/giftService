@@ -122,7 +122,8 @@ class User_Service:
         cursor.execute(GET_USER_BY_ID, (user_id,))
         user = cursor.fetchone()
         if user:
-          return user
+          print(user)
+          return jsonify(user)
         else:
           return {"message": "User not found"}, 400
 

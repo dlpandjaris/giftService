@@ -29,7 +29,10 @@ def token_required(f):
       return {'message': 'a valid token is missing'}, 401
     try:
       data = user_service.decode_token(token)
+      print(data)
+      print(data['id'])
       current_user = user_service.get_user_by_id(data['id'])
+      print(current_user)
     except:
       return {'message': 'token is invalid'}, 401
 
@@ -78,7 +81,7 @@ def delete_group(id):
   return group_service.delete(id)
 
 @app.get("/group")
-@token_required
+# @token_required
 def get_all_groups():
   return group_service.get_all_groups()
 
