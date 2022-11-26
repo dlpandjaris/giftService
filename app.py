@@ -47,7 +47,7 @@ def create_user():
   user = request.get_json()
   return user_service.create(user)
 
-@app.delete("/user/delete/<int:id>")
+@app.delete("/user/delete/<string:id>")
 def delete_user(id):
   return user_service.delete(id)
 
@@ -67,13 +67,12 @@ def get_all_users():
 
 
 @app.post("/group/create")
-@token_required
+# @token_required
 def create_group():
-  data = request.get_json()
-  name = data["name"]
-  return group_service.create(name)
+  group = request.get_json()
+  return group_service.create(group)
 
-@app.delete("/group/delete/<int:id>")
+@app.delete("/group/delete/<string:id>")
 @token_required
 def delete_group(id):
   return group_service.delete(id)
@@ -82,6 +81,17 @@ def delete_group(id):
 @token_required
 def get_all_groups():
   return group_service.get_all_groups()
+
+@app.get("/group/<string:id>")
+# @token_required
+def get_group_by_id(id):
+  return group_service.get_group_by_id(id)
+
+@app.post("/group")
+# @token_required
+def update_group():
+  group = request.get_json()
+  return group_service.update_group(group)
 
 @app.get("/group/get-group-counts")
 def get_group_counts():

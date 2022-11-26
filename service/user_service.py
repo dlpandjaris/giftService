@@ -82,6 +82,7 @@ class User_Service:
       password = user['password']
     except KeyError:
       return {"message": "Bad request."}, 400
+
     with self.connection:
       with self.connection.cursor() as cursor:
         cursor.execute(CREATE_USERS_TABLE)
@@ -109,9 +110,6 @@ class User_Service:
         users = cursor.fetchall()
         return jsonify(users), 201
 
-  def decode_token(self, token):
-    return jwt.decode(token, self.api_key, algorithms=["HS256"])
-
   def get_user_by_id(self, user_id):
     GET_USER_BY_ID = ("""
       SELECT * FROM users
@@ -119,11 +117,17 @@ class User_Service:
     """)
 
     with self.connection:
-      with self.connection.cursor() as cursor:
+      with self.connection.cursor(cursor_factory=RealDictCursor) as cursor:
         cursor.execute(CREATE_USERS_TABLE)
         cursor.execute(GET_USER_BY_ID, (user_id,))
         user = cursor.fetchone()
-        return user
+        if user:
+          return user
+        else:
+          return {"message": "User not found"}, 400
+
+  def decode_token(self, token):
+    return jwt.decode(token, self.api_key, algorithms=["HS256"])
 
   @staticmethod
   def check_password_strength(password):
