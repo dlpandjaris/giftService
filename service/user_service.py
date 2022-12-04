@@ -73,7 +73,7 @@ class User_Service:
 
   def authenticate(self, user):
     AUTHENTICATE_USER = ("""
-      SELECT id, role, password FROM users
+      SELECT first_name, last_name, role, password FROM users
       WHERE email = %s
     """)
 
@@ -89,13 +89,13 @@ class User_Service:
         cursor.execute(AUTHENTICATE_USER, (email,))
         try: 
           record = cursor.fetchone()
-          user_id = record[0]
-          role = record[1]
-          password_hash = record[2]
+          full_name = f'{record[0]} {record[1]}'
+          role = record[2]
+          password_hash = record[3]
         except TypeError:
           return {"message": f"Email not found."}, 400
         if check_password_hash(password_hash, password):
-          token = jwt.encode({'id' : user_id, 'role': role,  'exp' : datetime.datetime.utcnow() + datetime.timedelta(hours=1)}, self.api_key, "HS256")
+          token = jwt.encode({'name' : full_name, 'role': role,  'exp' : datetime.datetime.utcnow() + datetime.timedelta(hours=1)}, self.api_key, "HS256")
           return {"token": token, "message": f"Login Success!"}, 201
         else:
           return {"message": f"Password incorrect."}, 404

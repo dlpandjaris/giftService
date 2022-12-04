@@ -73,12 +73,12 @@ def create_group():
   return group_service.create(group)
 
 @app.delete("/group/delete/<string:id>")
-@token_required
+# @token_required
 def delete_group(id):
   return group_service.delete(id)
 
 @app.get("/group")
-@token_required
+# @token_required
 def get_all_groups():
   return group_service.get_all_groups()
 
