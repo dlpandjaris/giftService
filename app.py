@@ -29,7 +29,10 @@ def token_required(f):
       return {'message': 'a valid token is missing'}, 401
     try:
       data = user_service.decode_token(token)
+      print(data)
+      print(data['id'])
       current_user = user_service.get_user_by_id(data['id'])
+      print(current_user)
     except:
       return {'message': 'token is invalid'}, 401
 
